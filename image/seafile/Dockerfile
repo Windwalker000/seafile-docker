@@ -19,4 +19,14 @@ COPY templates /templates
 
 EXPOSE 80
 
-CMD ["/sbin/my_init", "--", "/scripts/start.py"]
+# RUN apt-get update && apt-get install sudo
+RUN useradd -u 1000 -r -g root -m -d /seafile -s /sbin/nologin -c "App user" seafile && \
+    chmod 755 /seafile
+#    chown -R seafile:root /etc/nginx/sites-enabled/ && \
+#    echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && adduser seafile sudo
+# USER seafile
+# RUN cat /etc/sudoers
+# RUN sudo uname -a
+# USER root
+
+CMD /sbin/my_init -- /bin/bash -c '/scripts/start.py && setuser seafile /scripts/run.py'
